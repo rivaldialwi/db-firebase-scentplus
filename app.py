@@ -64,18 +64,15 @@ db = firestore.client()
 
 # Fungsi untuk menyimpan data ke Firestore
 def save_to_firestore(text, sentiment):
-    # Mendapatkan tanggal saat ini dalam format ISO
-    current_date = datetime.now().isoformat()
-    # Menyiapkan data untuk disimpan ke Firestore
-    data = {
+    # Membuat dokumen baru di koleksi "sentiments"
+    doc_ref = db.collection("sentiments").document()
+    # Menyimpan data teks dan hasil sentimen ke dalam dokumen
+    doc_ref.set({
         "text": text,
-        "hasil": sentiment,
-        "date": current_date
-    }
-    # Menambahkan dokumen baru ke koleksi "riwayat" dengan data yang disiapkan
-    doc_ref = db.collection("riwayat").document()
-    doc_ref.set(data)
-    print("Data telah disimpan ke koleksi 'riwayat' di Firestore.")
+        "sentiment": sentiment
+    })
+    print("Data telah disimpan ke Firestore.")
+
 
 # Streamlit UI
 st.title("Aplikasi Analisis Sentimen Scentplus")
