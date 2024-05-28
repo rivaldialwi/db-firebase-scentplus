@@ -8,6 +8,11 @@ from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split  # Tambahkan import untuk train_test_split
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+from datetime import datetime
+
 # Lakukan unduhan NLTK di awal skrip
 nltk.download('stopwords')
 nltk.download('punkt')  # Unduh tokenizer 'punkt' untuk bahasa Indonesia
@@ -51,6 +56,27 @@ def classify_text(input_text):
     # Melakukan prediksi menggunakan model
     predicted_label = logreg_model.predict(input_vector)[0]
     return predicted_label
+
+# Inisialisasi Firebase Admin SDK
+cred = credentials.Certificate("path/to/serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+# Fungsi untuk menyimpan data ke Firestore
+def save_to_firestore(text, sentiment):
+    # Mendapatkan tanggal saat ini dalam format ISO
+    current_date = datetime.now().isoformat()
+    # Menyiapkan data untuk disimpan ke Firestore
+    data = {
+        "text": text,
+        "hasil": sentiment,
+        "date": current_date
+    }
+    # Menambahkan dokumen baru ke koleksi "riwayat" dengan data yang disiapkan
+    doc_ref = db.collection("riwayat").document()
+    doc_ref.set(data)
+    print("Data telah disimpan ke koleksi 'riwayat' di Firestore.")
+
 
 # Streamlit UI
 st.title("Aplikasi Analisis Sentimen Scentplus")
