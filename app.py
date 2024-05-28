@@ -76,8 +76,6 @@ def save_to_firestore(text, sentiment):
     doc_ref = db.collection("riwayat").document()
     doc_ref.set(data)
     print("Data telah disimpan ke koleksi 'riwayat' di Firestore.")
-    except Exception as e:
-    print("Gagal menyimpan data ke Firestore:", e)
 
 # Streamlit UI
 st.title("Aplikasi Analisis Sentimen Scentplus")
